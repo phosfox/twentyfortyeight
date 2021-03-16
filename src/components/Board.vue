@@ -28,7 +28,7 @@ export default class Board extends Vue {
     [0, 0, 0, 0],
     [0, 0, 0, 2],
     [0, 0, 0, 2],
-    [0, 0, 2, 4]
+    [0, 2, 2, 4]
   ]
 
   /**
@@ -56,17 +56,41 @@ export default class Board extends Vue {
   }
 
   private moveLeft () {
-    return this.grid.map(row => {
-      const newRow = row.filter(ele => ele !== 0)
-      return newRow.concat(Array(row.length - newRow.length).fill(0))
-    })
+    const newGrid = [...this.grid]
+    for (let i = 0; i < newGrid.length; i++) {
+      for (let j = 1; j < newGrid[i].length; j++) {
+        const ele = newGrid[i][j]
+        const leftNeighbour = newGrid[i][j - 1]
+        if (leftNeighbour === 0) {
+          [newGrid[i][j - 1], newGrid[i][j]] = [ele, 0]
+          continue
+        }
+        if (leftNeighbour === ele) {
+          [newGrid[i][j - 1], newGrid[i][j]] = [ele + leftNeighbour, 0]
+          continue
+        }
+      }
+    }
+    return newGrid
   }
 
   private moveRight () {
-    return this.grid.map(row => {
-      const newRow = row.filter(ele => ele !== 0)
-      return Array(row.length - newRow.length).fill(0).concat(newRow)
-    })
+    const newGrid = [...this.grid]
+    for (let i = 0; i < newGrid.length; i++) {
+      for (let j = newGrid[i].length - 1; j >= 0; j--) {
+        const ele = newGrid[i][j]
+        const rightNeighbour = newGrid[i][j + 1]
+        if (rightNeighbour === 0) {
+          [newGrid[i][j + 1], newGrid[i][j]] = [ele, 0]
+          continue
+        }
+        if (rightNeighbour === ele) {
+          [newGrid[i][j + 1], newGrid[i][j]] = [ele + rightNeighbour, 0]
+          continue
+        }
+      }
+    }
+    return newGrid
   }
 
   mounted () {
