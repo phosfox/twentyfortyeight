@@ -38,30 +38,41 @@ export default class Board extends Vue {
     switch (direction.key) {
       case 'ArrowDown':
         console.log('ArrowDown', Direction.Down)
+        this.grid = this.moveDown(this.grid)
         break
       case 'ArrowUp':
         console.log('ArrowUp', Direction.Up)
+        this.grid = this.moveUp(this.grid)
         break
       case 'ArrowLeft':
         console.log('ArrowLeft', Direction.Left)
-        this.grid = this.moveLeft()
+        this.grid = this.moveLeft(this.grid)
         break
       case 'ArrowRight':
         console.log('ArrowRight', Direction.Right)
-        this.grid = this.moveRight()
+        this.grid = this.moveRight(this.grid)
         break
       default:
         break
     }
   }
 
-  private moveLeft () {
-    const newGrid = this.grid.map(row => {
+  private transpose = (m: number [][]) => m[0].map((x, i) => m.map(x => x[i]))
+
+  private moveUp (grid: number [][]) {
+    return this.transpose(this.moveLeft(this.transpose(grid)))
+  }
+
+  private moveDown (grid: number[][]) {
+    return this.transpose(this.moveRight(this.transpose(grid)))
+  }
+
+  private moveLeft (grid: number[][]) {
+    const newGrid = grid.map(row => {
       const nonZeroRow = row.filter(ele => ele !== 0)
       const newRow = nonZeroRow.concat(Array(row.length - nonZeroRow.length).fill(0))
       return newRow
-    }
-    )
+    })
     for (let i = 0; i < newGrid.length; i++) {
       for (let j = 1; j < newGrid[i].length; j++) {
         const ele = newGrid[i][j]
@@ -79,8 +90,8 @@ export default class Board extends Vue {
     return newGrid
   }
 
-  private moveRight () {
-    const newGrid = this.grid.map(row => {
+  private moveRight (grid: number [][]) {
+    const newGrid = grid.map(row => {
       const nonZeroRow = row.filter(ele => ele !== 0)
       const newRow = Array(row.length - nonZeroRow.length).fill(0).concat(nonZeroRow)
       return newRow
