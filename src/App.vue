@@ -29,4 +29,7 @@ export default class App extends Vue {}
   height: 100vh;
 
 }
+body {
+  margin: 0;
+}
 </style>
