@@ -103,7 +103,9 @@ export default class Board extends Vue {
     return newGrid
   }
 
-  private transpose = (m: number [][]) => m[0].map((x, i) => m.map(x => x[i]))
+  private transpose (m: number [][]): number[][] {
+    return m[0].map((x, i) => m.map(x => x[i]))
+  }
 
   private moveUp (grid: number [][]) {
     return this.transpose(this.moveLeft(this.transpose(grid)))
