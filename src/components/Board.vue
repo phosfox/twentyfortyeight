@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-      <div class="score"> {{ score }} </div>
+    <div class="score"> Score: {{ score }} </div>
     <div class="board">
       <template v-for="(row, i) in grid">
         <div
@@ -148,6 +148,12 @@ export default class Board extends Vue {
 </script>
 
 <style>
+.score {
+  font-size: 5vh;
+}
+.container {
+  width: 600px;
+}
 .board {
   display: flex;
   justify-content: center;
@@ -172,7 +178,7 @@ export default class Board extends Vue {
   align-items: center;
   background: #d3d3d3;
   border-radius: 10px;
-  font-size: 5vw;
+  font-size: 5vh;
 }
 .cell.exists > .inner.tile-2 {
   background: #f0edea;
