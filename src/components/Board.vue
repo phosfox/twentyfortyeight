@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <div v-if="gameOver" style="font-size: 5vh; color: red"> GAME OVER </div>
     <div class="score"> Score: {{ score }} </div>
     <div class="board">
       <template v-for="(row, i) in grid">
@@ -30,27 +31,48 @@ export default class Board extends Vue {
     [0, 2, 2, 4]
   ]
 
+  get gameOver () {
+    for (let y = 0; y < this.grid.length; y++) {
+      for (let x = 0; x < this.grid.length; x++) {
+        const nbs = this.neighbours(x, y)
+        console.log(nbs)
+        if (nbs) {
+          for (const [nX, nY] of nbs) {
+            if (this.grid[x][y] === this.grid[nX][nY]) {
+              return false
+            }
+          }
+        }
+      }
+    }
+    return true && (this.grid.flat().filter(ele => ele === 0).length === 0)
+  }
+
   get score () {
     return this.grid.flat().reduce((prev, curr) => prev + curr)
+  }
+
+  private neighbours (x: number, y: number) {
+    return [[x, y - 1], [x - 1, y], [x + 1, y], [x, y + 1]]
+      .filter(
+        pair =>
+          pair[0] >= 0 && pair[1] >= 0 &&
+          pair[0] < 4 && pair[1] < 4)
   }
 
   private move (direction: KeyboardEvent) {
     const oldGrid = [...this.grid]
     switch (direction.key) {
-      case 'ArrowDown':
-        console.log('ArrowDown', Direction.Down)
+      case Direction.Down:
         this.grid = this.moveDown(this.grid)
         break
-      case 'ArrowUp':
-        console.log('ArrowUp', Direction.Up)
+      case Direction.Up:
         this.grid = this.moveUp(this.grid)
         break
-      case 'ArrowLeft':
-        console.log('ArrowLeft', Direction.Left)
+      case Direction.Left:
         this.grid = this.moveLeft(this.grid)
         break
-      case 'ArrowRight':
-        console.log('ArrowRight', Direction.Right)
+      case Direction.Right:
         this.grid = this.moveRight(this.grid)
         break
       default:
