@@ -71,17 +71,14 @@ export default class Board extends Vue {
     const { startX, startY, endX, endY } = touches
     if (endX < startX) {
       this.move(Direction.Left)
-      return
     }
 
     if (endX > startX) {
       this.move(Direction.Right)
-      return
     }
 
     if (endY < startY) {
       this.move(Direction.Up)
-      return
     }
 
     if (endY > startY) {
