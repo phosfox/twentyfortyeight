@@ -56,7 +56,12 @@ export default class Board extends Vue {
   }
 
   private moveLeft () {
-    const newGrid = [...this.grid]
+    const newGrid = this.grid.map(row => {
+      const nonZeroRow = row.filter(ele => ele !== 0)
+      const newRow = nonZeroRow.concat(Array(row.length - nonZeroRow.length).fill(0))
+      return newRow
+    }
+    )
     for (let i = 0; i < newGrid.length; i++) {
       for (let j = 1; j < newGrid[i].length; j++) {
         const ele = newGrid[i][j]
@@ -75,7 +80,11 @@ export default class Board extends Vue {
   }
 
   private moveRight () {
-    const newGrid = [...this.grid]
+    const newGrid = this.grid.map(row => {
+      const nonZeroRow = row.filter(ele => ele !== 0)
+      const newRow = Array(row.length - nonZeroRow.length).fill(0).concat(nonZeroRow)
+      return newRow
+    })
     for (let i = 0; i < newGrid.length; i++) {
       for (let j = newGrid[i].length - 1; j >= 0; j--) {
         const ele = newGrid[i][j]
