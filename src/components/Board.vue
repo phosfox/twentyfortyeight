@@ -153,7 +153,6 @@ export default class Board extends Vue {
 }
 .container {
   width: 600px;
-  margin: 0 auto;
 }
 .board {
   display: flex;
