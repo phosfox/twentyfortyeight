@@ -21,6 +21,14 @@
 <script lang='ts'>
 import { Component, Vue } from 'vue-property-decorator'
 import { Direction } from '../types/directions'
+import { Touches } from '../types/touches'
+
+const touches: Touches = {
+  startX: 0,
+  startY: 0,
+  endX: 0,
+  endY: 0
+}
 
 @Component
 export default class Board extends Vue {
@@ -35,7 +43,6 @@ export default class Board extends Vue {
     for (let y = 0; y < this.grid.length; y++) {
       for (let x = 0; x < this.grid.length; x++) {
         const nbs = this.neighbours(x, y)
-        console.log(nbs)
         if (nbs) {
           for (const [nX, nY] of nbs) {
             if (this.grid[x][y] === this.grid[nX][nY]) {
@@ -60,9 +67,35 @@ export default class Board extends Vue {
           pair[0] < 4 && pair[1] < 4)
   }
 
-  private move (direction: KeyboardEvent) {
+  private handleTouches () {
+    const { startX, startY, endX, endY } = touches
+    if (endX < startX) {
+      this.move(Direction.Left)
+      return
+    }
+
+    if (endX > startX) {
+      this.move(Direction.Right)
+      return
+    }
+
+    if (endY < startY) {
+      this.move(Direction.Up)
+      return
+    }
+
+    if (endY > startY) {
+      this.move(Direction.Down)
+    }
+  }
+
+  private handleKeyboard (event: KeyboardEvent) {
+    this.move(event.key as Direction)
+  }
+
+  private move (direction: Direction) {
     const oldGrid = [...this.grid]
-    switch (direction.key) {
+    switch (direction) {
       case Direction.Down:
         this.grid = this.moveDown(this.grid)
         break
@@ -162,11 +195,20 @@ export default class Board extends Vue {
   }
 
   mounted () {
-    document.addEventListener('keydown', this.move)
+    document.addEventListener('keydown', this.handleKeyboard)
+    document.addEventListener('touchstart', e => {
+      touches.startX = e.changedTouches[0].screenX
+      touches.startY = e.changedTouches[0].screenY
+    }, false)
+    document.addEventListener('touchend', e => {
+      touches.endX = e.changedTouches[0].screenX
+      touches.endY = e.changedTouches[0].screenY
+      this.handleTouches()
+    }, false)
   }
 
   destroyed () {
-    document.removeEventListener('keydown', this.move)
+    document.removeEventListener('keydown', this.handleKeyboard)
   }
 }
 </script>
