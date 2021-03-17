@@ -23,7 +23,6 @@ import { Direction } from '../types/directions'
 
 @Component
 export default class Board extends Vue {
-  private score = 0
   private grid = [
     [0, 0, 0, 0],
     [0, 0, 0, 2],
@@ -31,10 +30,12 @@ export default class Board extends Vue {
     [0, 2, 2, 4]
   ]
 
-  /**
-   * move
-   */
+  get score () {
+    return this.grid.flat().reduce((prev, curr) => prev + curr)
+  }
+
   private move (direction: KeyboardEvent) {
+    const oldGrid = [...this.grid]
     switch (direction.key) {
       case 'ArrowDown':
         console.log('ArrowDown', Direction.Down)
@@ -55,6 +56,29 @@ export default class Board extends Vue {
       default:
         break
     }
+    if (this.gridMoved(oldGrid, this.grid)) {
+      this.grid = this.insertTile(this.grid)
+    }
+  }
+
+  private gridMoved (oldGrid: number[][], newGrid: number[][]) {
+    return !oldGrid.flat().every((ele, idx) => ele === newGrid.flat()[idx])
+  }
+
+  private insertTile (grid: number[][], val = 2) {
+    const emptySpots: number[][] = []
+    grid.forEach((row, x) => {
+      row.forEach((ele, y) => {
+        if (ele === 0) {
+          emptySpots.push([x, y])
+        }
+      })
+    })
+    const randomIndex = Math.floor(emptySpots.length * Math.random())
+    const [randX, randY] = emptySpots[randomIndex]
+    const newGrid = [...grid]
+    newGrid[randX][randY] = val
+    return newGrid
   }
 
   private transpose = (m: number [][]) => m[0].map((x, i) => m.map(x => x[i]))
