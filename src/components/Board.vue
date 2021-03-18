@@ -226,7 +226,7 @@ export default class Board extends Vue {
 .cell {
   /* background-color: lightgrey; */
   width: 150px;
-  height: 150px;
+  height: 15vh;
   /* border: 1px solid black; */
   padding: 5px;
   box-sizing: border-box;
